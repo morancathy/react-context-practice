@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useEffect } from "react";
 import { bookReducer } from "../reducers/bookReducer";
 
 export const BookContext = createContext(); //this creates our context
@@ -8,7 +8,14 @@ const BookContextProvider = (props) => {
   //   { title: "book1", author: "author1", id: 1 },
   //   { title: "book2", author: "author2", id: 2 },
   // ]);
-  const [books, dispatch] = useReducer(bookReducer, []);
+  const [books, dispatch] = useReducer(bookReducer, [], () => {
+    const localData = localStorage.getItem("books");
+    return localData ? JSON.parse(localData) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("books", JSON.stringify(books));
+  }, [books]);
 
   // const addBook = (title, author) => {
   //   setBooks([...books, { title, author, id: Math.random() }]);
